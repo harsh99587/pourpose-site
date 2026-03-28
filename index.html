@@ -857,13 +857,20 @@
     /* ── SCROLL ANIMATIONS ── */
     .reveal {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s, transform 0.7s;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
     }
 
     .reveal.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .reveal {
+        transform: translateY(10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
     }
 
     /* ── HAMBURGER ── */
@@ -1347,13 +1354,24 @@
       });
     });
 
-    // Scroll reveal
+    // Scroll reveal — low threshold so mobile triggers easily
     const revealEls = document.querySelectorAll('.reveal, .step');
+
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
         }
       });
-    }, { t
+    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    // Staggered steps
+    document.querySelectorAll('.step').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.15}s`;
+    });
+  </script>
+</body>
+</html>
